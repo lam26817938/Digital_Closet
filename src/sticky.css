@@ -1,0 +1,81 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Sticky 面板的主容器 */
+#sticky-panel {
+  position: fixed;
+  top: 50px;
+  right: 0;
+  width: 120px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  background-color: #42d7a6;
+  border-radius: 8px 0 0 8px;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  overflow: hidden;
+  cursor: default;
+}
+
+/* 左侧内容区域 */
+#sticky-content {
+  flex: 1;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#sticky-content button {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+#logo img {
+  width: 40px;
+  height: 40px; /* 固定宽高 */
+  object-fit: cover; /* 确保图片填充 */
+  border-radius: 50%; /* 如果需要圆形图标 */
+}
+
+/* 右侧拖拉区域 */
+#drag-handle {
+  width: 20px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  display: none; /* 默认隐藏 */
+  cursor: grab;
+}
+
+/* 鼠标悬停时显示拖拉区域 */
+#sticky-panel:hover #drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+#drag-handle:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+#drag-handle::after {
+  content: "";
+  width: 4px;
+  height: 20px;
+  background-color: white;
+  border-radius: 2px;
+  display: block;
+  box-shadow: 0 4px white, 0 -4px white; /* 模拟三个圆点 */
+}

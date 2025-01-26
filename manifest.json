@@ -1,14 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "Image Extractor",
+  "name": "Digital Closet",
   "version": "1.0",
   "permissions": ["activeTab", "scripting","downloads", "storage",
-  "webRequest",
-  "webRequestBlocking",
   "declarativeNetRequest",
-  "declarativeNetRequestWithHostAccess",
-  "http://*/*",
-  "https://*/*"],
+  "declarativeNetRequestWithHostAccess"
+  ],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "src/background.js"
@@ -21,6 +18,12 @@
     {
       "matches": ["<all_urls>"],
       "js": ["src/content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["src/float.html", "src/sticky.html","src/sticky.css", "icon.png"],
+      "matches": ["<all_urls>"]
     }
   ]
 }

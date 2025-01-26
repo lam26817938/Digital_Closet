@@ -1,0 +1,138 @@
+/* 背景样式 */
+body {
+    font-family: Arial, sans-serif;
+    width: 400px; /* 固定宽度 */
+    height: 600px; /* 固定高度 */
+    overflow-y: auto; /* 当内容超出时允许滚动 */
+    padding: 10px;
+    background: linear-gradient(135deg, #f0f8ff, #ffffff); /* 浅蓝到白的渐变背景 */
+    margin: 0;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+    border-radius: 10px; /* 页面整体圆角 */
+}
+
+/* 图片容器 */
+.image-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px; /* 增加图片之间的间距 */
+}
+
+/* 图片容器的子元素样式 */
+.image-container div {
+    position: relative; /* 让操作按钮相对定位 */
+}
+
+/* 图片样式 */
+.image-container img {
+    max-width: 120px; /* 限制图片宽度 */
+    max-height: 150px; /* 限制图片高度 */
+    object-fit: cover; /* 图片裁剪填充容器 */
+    cursor: pointer; /* 鼠标变为指针 */
+    border: 2px solid transparent; /* 默认边框透明 */
+    border-radius: 8px; /* 图片边角圆滑 */
+    transition: transform 0.2s, border-color 0.2s; /* 鼠标悬停时添加动画 */
+}
+
+/* 鼠标悬停图片效果 */
+.image-container img:hover {
+    transform: scale(1.05); /* 悬停时放大图片 */
+    border-color: rgb(200, 230, 255); /* 悬停时浅蓝边框 */
+}
+
+/* 图片选中样式 */
+.image-container img.selected {
+    border-color: rgb(50, 207, 221); /* 浅蓝边框 */
+    transform: scale(1.1); /* 选中时略微放大 */
+}
+
+/* 图片操作按钮 */
+.image-container .image-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: none; /* 默认隐藏按钮 */
+    flex-direction: column;
+    gap: 5px;
+    z-index: 10; /* 确保按钮在最上层 */
+}
+
+/* 鼠标悬停图片容器时显示按钮 */
+.image-container div:hover .image-actions {
+    display: flex; /* 鼠标悬停整个容器时显示按钮 */
+}
+
+/* 按钮样式 */
+.image-actions button {
+    padding: 5px 8px;
+    font-size: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: rgba(50, 207, 221, 0.9);
+    color: white;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.image-actions button:hover {
+    background-color: rgba(38, 170, 181, 0.9); /* 鼠标悬停时加深颜色 */
+    transform: scale(1.1); /* 鼠标悬停时放大按钮 */
+}
+
+/* 状态栏样式 */
+.status {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: rgb(60, 60, 60); /* 深灰色字体 */
+}
+
+/* 固定底部的按钮区域 */
+.fixed-buttons {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #ccc;
+    box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.1); /* 添加顶部阴影 */
+}
+
+/* 底部按钮样式 */
+.fixed-buttons button {
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: rgb(50, 207, 221);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.fixed-buttons button:hover {
+    background-color: rgb(38, 170, 181);
+    transform: scale(1.05); /* 鼠标悬停时放大 */
+}
+
+/* 右上角的配置按钮 */
+.profile-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    background-color: rgb(50, 207, 221);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* 添加按钮阴影 */
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.profile-button:hover {
+    background-color: rgb(38, 170, 181);
+    transform: scale(1.05);
+}
