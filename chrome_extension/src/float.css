@@ -1,0 +1,119 @@
+/* 浮动窗口主容器 */
+#floating-window {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  height: 400px;
+  background-color: #ffffff; /* 主背景为白色 */
+  border: 1px solid #e0e0e0; /* 浅灰色边框 */
+  border-radius: 12px; /* 更圆滑的圆角 */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15); /* 柔和的阴影 */
+  z-index: 10000;
+  overflow: hidden;
+  transition: box-shadow 0.3s, transform 0.3s; /* 添加动画效果 */
+}
+
+#floating-window:hover {
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.25); /* 悬停时增加阴影 */
+  transform: translateY(-2px); /* 悬停时稍微上移 */
+}
+
+/* 标题栏样式 */
+#floating-header {
+  background-color: #42d7a6; /* 浅绿色背景 */
+  padding: 10px 15px;
+  font-weight: bold;
+  color: #2d2d2d; /* 深灰色标题文字 */
+  cursor: move; /* 鼠标变为移动样式 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none; /* 禁止文字选中 */
+  border-bottom: 1px solid #3ab693; /* 标题栏底部边框 */
+  font-size: 16px; /* 增大字体 */
+}
+
+/* 关闭按钮样式 */
+#close-floating-window {
+  border: none;
+  background: transparent;
+  color: #ffffff; /* 按钮文字颜色为白色 */
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+}
+
+#close-floating-window:hover {
+  transform: scale(1.2); /* 悬停时放大 */
+  color: #ff5656; /* 悬停时颜色变红 */
+}
+
+/* 内容区域样式 */
+#floating-content {
+  padding: 15px;
+  font-size: 14px;
+  color: #4a4a4a; /* 内容文字为深灰色 */
+  line-height: 1.6; /* 增加行间距 */
+}
+
+/* 自定义滚动条样式 */
+#floating-window::-webkit-scrollbar {
+  width: 8px;
+}
+
+#floating-window::-webkit-scrollbar-thumb {
+  background-color: #cccccc;
+  border-radius: 4px;
+}
+
+#floating-window::-webkit-scrollbar-thumb:hover {
+  background-color: #b3b3b3;
+}
+
+#floating-window::-webkit-scrollbar-track {
+  background-color: #f9f9f9;
+}
+
+/* 固定试穿按钮到底部 */
+#try-on-container {
+  position: absolute; /* 改为绝对定位，使其限制在浮动窗口中 */
+  bottom: 0;
+  width: 100%; /* 占满浮动窗口的宽度 */
+  background-color: #f1f1f1;
+  text-align: center;
+  padding: 10px;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 调整按钮样式 */
+#try-on-button {
+  display: inline-block; /* 按钮宽度由内容决定 */
+  max-width: 90%; /* 限制按钮的最大宽度 */
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center; /* 居中对齐文字 */
+  white-space: nowrap; /* 防止文字换行 */
+}
+
+#try-on-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* 图片样式 */
+#floating-content img {
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+#floating-content img.selected {
+  border-color: #007bff;
+}

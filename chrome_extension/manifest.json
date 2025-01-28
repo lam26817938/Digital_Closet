@@ -22,7 +22,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["src/float.html", "src/sticky.html","src/sticky.css", "icon.png"],
+      "resources": ["src/float.html", "src/sticky.html", "src/sticky.css", "icon.png", "src/float.css"],
       "matches": ["<all_urls>"]
     }
   ]

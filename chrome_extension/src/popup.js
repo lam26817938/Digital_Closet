@@ -109,35 +109,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 發送選中的圖片到後端
   function sendSelectedImages() {
     const selectedImages = Array.from(
       document.querySelectorAll('#image-container img.selected')
-    ).map((img) => img.src);
-
+    );
+  
     if (selectedImages.length === 0) {
       alert('Please select at least one image to send.');
       return;
     }
-
-    fetch('https://your-backend-api.com/upload', {
+  
+    // 顯示成功消息並立即清除選中狀態
+    alert('Sent!');
+    selectedImages.forEach((img) => {
+      img.classList.remove('selected');
+    });
+    updateStatus(); // 更新選中數量顯示
+  
+    // 發送請求
+    const selectedImagesSrc = selectedImages.map((img) => img.src);
+    fetch('http://127.0.0.1:8000/inference', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ images: selectedImages }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          alert('圖片已成功傳送！');
-        } else {
-          alert('傳送失敗，請稍後再試！');
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        alert('發生錯誤，請檢查網路或後端狀態。');
-      });
+      body: JSON.stringify({ images: selectedImagesSrc }),
+    }).catch((error) => {
+      console.error('Error', error);
+    });
   }
 
   // 綁定事件
@@ -146,10 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('profile-button').addEventListener('click', () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tabId = tabs[0].id;
-    chrome.scripting.executeScript({
-      target: { tabId: tabId },
-      files: ['src/float.js'] // 注入浮動窗口腳本
-    });
+    chrome.tabs.sendMessage(tabs[0].id, { action: "toggle-float" });
   });
   window.close();
 });
