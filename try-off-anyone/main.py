@@ -1,7 +1,7 @@
 from src.test_vton import test_vton
 from src.inference import test_image
 import argparse
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.requests import Request
@@ -20,7 +20,7 @@ client = Client("franciszzj/Leffa")
 
 app = FastAPI()
 
-
+MODEL = 'pose1.jpg'
 directory = Path("data")
 
 app.mount("/static", StaticFiles(directory="data"), name="static")
@@ -33,7 +33,10 @@ app.add_middleware(
 
 
 class InferenceRequest(BaseModel):
-    images: list[str] 
+    images: list[str]
+
+class TryOnRequest(BaseModel):
+    ref_image_path: str 
 
 
 def terminal_args():
@@ -75,23 +78,25 @@ def get_next_filename(directory: Path, base_name: str, extension: str) -> str:
     new_number = highest_number + 1
     new_file_name = f"{base_name}_{new_number}{extension}"
     return new_file_name
-        
+
+def run_ai_inference(url: str):
+    """AI 任务（在后台运行）"""
+    try:
+        test_image(url)
+    except Exception as e:
+        print(f"❌ AI 任务失败: {e}")
+                
 @app.post("/inference")
-async def run_inference(request: InferenceRequest):
+async def run_inference(background_tasks: BackgroundTasks, request: InferenceRequest):
     """
     接收多個圖片 URL
     """
     output_dir = Path("data")
     output_dir.mkdir(exist_ok=True)  # 確保資料夾存在
 
-    for url in request.images:
-        try:
-            
-            test_image(url)
-            
-        except Exception as e:
-            print(f"Error processing image from {url}: {e}")
-            continue
+    for url in request.images:   
+        background_tasks.add_task(run_ai_inference, url)
+    
 
 
 
@@ -109,14 +114,20 @@ async def list_files():
     images = [f"http://127.0.0.1:8000/static/{file}" for file in files]
     return {"images": images}
 
-@app.get("/tryon")
-async def list_files():
-    src_image_path = Path("data/model.png")
-    ref_image_url = Path("data/clo1.png")
+@app.get("/model", response_class=JSONResponse)
+async def model():
+    
+    image = f"http://127.0.0.1:8000/static/{MODEL}"
+    return {"images": image}
 
-    # 確保來源圖片存在
+@app.post("/tryon")
+async def tryon(request: TryOnRequest):
+    src_image_path = Path(f"data/{MODEL}")
+    file_name = Path(request.ref_image_path).name
+    ref_image_url = Path("data") / file_name
+    
     if not src_image_path.exists():
-        raise HTTPException(status_code=404, detail="Source image (model.png) not found in data directory")
+        raise HTTPException(status_code=404, detail="Source image (model.png) not found")
 
     # 使用 Gradio 客戶端進行推理
     try:
@@ -140,16 +151,17 @@ async def list_files():
 
         # 移動文件
         shutil.move(generated_file_path, final_path)
-        return {"generated_image": f"/static/{new_file_name}"}
+        return {"generated_image": f"http://127.0.0.1:8000/static/{new_file_name}"}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error during try-on process: {str(e)}")
     
-@app.get("/pose")
-async def list_files():
+@app.post("/pose")
+async def pose(request: TryOnRequest):
     pose_number = random.randint(1, 10)
     src_image_path = Path(f"data/pose{pose_number}.jpg")
-    ref_image_url = Path("data/image_1.webp")
+    file_name = Path(request.ref_image_path).name
+    ref_image_url = Path("data") / file_name
 
     # 確保來源圖片存在
     if not src_image_path.exists():
@@ -175,7 +187,7 @@ async def list_files():
 
         # 移動文件
         shutil.move(generated_file_path, final_path)
-        return {"generated_image": f"/static/{new_file_name}"}
+        return {"generated_image": f"http://127.0.0.1:8000/static/{new_file_name}"}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error during try-on process: {str(e)}")

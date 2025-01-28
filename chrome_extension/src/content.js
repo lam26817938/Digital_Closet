@@ -208,6 +208,7 @@ function togglefloat() {
       popupContainer.innerHTML = html;
       fetchfloatCSS();
       updateFloatingContent();
+      updateModelPhoto()
 
       const closeButton = popupContainer.querySelector("#close-floating-window");
       if (closeButton) {
@@ -252,7 +253,7 @@ function updateFloatingContent() {
       return response.json();
     })
     .then((data) => {
-      const floatingContent = document.getElementById('floating-content');
+      const floatingContent = document.getElementById('clothes-selection');
       floatingContent.innerHTML = ''; // 清空原内容
 
       // 动态添加图片
@@ -263,52 +264,179 @@ function updateFloatingContent() {
         imgElement.style.margin = '10px';
 
         imgElement.addEventListener('click', () => {
-          imgElement.classList.toggle('selected');
-          const selectedImages = document.querySelectorAll('#floating-content img.selected');
-          tryOnButton.disabled = selectedImages.length === 0; // 如果没有选中图片，则禁用按钮
+          document.querySelectorAll('#clothes-selection img.selected').forEach((img) => {
+            img.classList.remove('selected');
+          });
+          imgElement.classList.add('selected');
+          tryOnButton.disabled = false;
         });
-        // 试穿按钮点击事件
-        const tryOnButton = document.getElementById('try-on-button');
-        tryOnButton.addEventListener('click', () => {
-          const selectedImages = Array.from(document.querySelectorAll('#floating-content img.selected'))
-            .map((img) => img.src);
 
-          if (selectedImages.length === 0) {
-            alert('请选择至少一张图片进行试穿！');
-            return;
-          }
-
-          // 调用后端试穿接口
-          fetch('http://127.0.0.1:8000/try-on', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ images: selectedImages }),
-          })
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error('Failed to process try-on');
-              }
-              return response.json();
-            })
-            .then((data) => {
-              alert('试穿成功！');
-              console.log('试穿结果:', data);
-            })
-            .catch((error) => {
-              console.error('Error:', error);
-              alert('试穿失败，请稍后重试！');
-            });
-        });
 
         floatingContent.appendChild(imgElement);
       });
+    // 试穿按钮点击事件
+    const tryOnButton = document.getElementById('try-on-button');
+    tryOnButton.addEventListener('click', () => {
+      const selectedImages = Array.from(document.querySelectorAll('#clothes-selection img.selected'))
+        .map((img) => img.src);
+
+      if (selectedImages.length === 0) {
+        alert('At least choose one!');
+        return;
+      }
+
+      handleTryOn();
+
+    });
+    const nextPoseButton = document.getElementById('next-pose-button');
+
+    if (nextPoseButton) {
+      nextPoseButton.addEventListener('click', handleNextPose);
+    }
     })
     .catch((error) => {
       console.error('Error:', error);
       alert('Error occurred while updating images.');
     });
+
+}
+
+function updateModelPhoto() {
+  fetch('http://127.0.0.1:8000/model')
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch model image');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const modelPhotoContainer = document.getElementById('model-photo-container');
+
+      if (!modelPhotoContainer) {
+        console.error('Element not found: #model-photo-container');
+        return;
+      }
+
+      // 清空 model 区域，避免重复插入
+      modelPhotoContainer.innerHTML = '';
+
+      // 创建并插入图片
+      const imgElement = document.createElement('img');
+      imgElement.src = data.images; // API 返回的图片 URL
+      imgElement.alt = "Model Photo";
+      imgElement.style.maxWidth = '100%';
+      imgElement.style.maxHeight = '100%';
+      imgElement.style.objectFit = 'contain';
+
+      modelPhotoContainer.appendChild(imgElement);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      alert('Error occurred while fetching model image.');
+    });
+}
+
+let tryon_result = '';
+
+// 处理 Try On 按钮点击事件
+function handleTryOn() {
+  const selectedImage = document.querySelector('#clothes-selection img.selected'); // 获取选中的图片
+  if (!selectedImage) {
+    alert('请先选择一张图片进行试穿！');
+    return;
+  }
+
+  document.getElementById('loading-spinner').classList.remove('hidden');
+
+  // 调用 `/tryon` API
+  fetch('http://127.0.0.1:8000/tryon', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ref_image_path: selectedImage.src }), // 传递选中的图片路径
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to process try-on');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      // 更新右侧结果区域
+      updateResultDisplay(data.generated_image);
+      tryon_result = data.generated_image;
+      document.getElementById("next-pose-button").disabled = false;
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      alert('试穿失败，请稍后重试！');
+      document.getElementById("next-pose-button").disabled = true;
+    }).finally(() => {
+      document.getElementById('loading-spinner').classList.add('hidden');
+    });
+}
+
+// 处理 Next Pose 按钮点击事件
+function handleNextPose() {
+  // 调用 `/pose` API
+  const resultImage = document.querySelector('#result-display img');
+
+  if (!resultImage) {
+    alert("请先进行试穿，然后再尝试更换姿势！");
+    return;
+  }
+
+  const currentResultUrl = tryon_result;
+
+  document.getElementById('loading-spinner').classList.remove('hidden');
+
+  fetch('http://127.0.0.1:8000/pose', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ref_image_path: currentResultUrl }), // 发送当前图片 URL
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch pose image');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      // 更新右侧结果区域
+      updateResultDisplay(data.generated_image);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      alert('获取姿势失败，请稍后重试！');
+    })
+    .finally(() => {
+      document.getElementById('loading-spinner').classList.add('hidden');
+    });
+}
+
+// 更新右侧结果区域的方法
+function updateResultDisplay(imageUrl) {
+  const resultDisplay = document.getElementById('result-display');
+  if (!resultDisplay) {
+    console.error('Element not found: #result-display');
+    return;
+  }
+
+  // 清空现有内容
+  resultDisplay.innerHTML = '';
+
+  // 插入新的图片
+  const imgElement = document.createElement('img');
+  imgElement.src = imageUrl;
+  imgElement.alt = 'Generated Result';
+  imgElement.style.maxWidth = '100%';
+  imgElement.style.maxHeight = '100%';
+  imgElement.style.objectFit = 'contain';
+
+  resultDisplay.appendChild(imgElement);
 }
 
 

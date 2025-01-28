@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   
     // 顯示成功消息並立即清除選中狀態
-    alert('Sent!');
+    alert('Extracting! Please check out closet later!');
     selectedImages.forEach((img) => {
       img.classList.remove('selected');
     });

@@ -3,9 +3,33 @@
   <span>Digital Closet</span>
   <button id="close-floating-window">✖</button>
 </div>
-<div id="floating-content">
 
+<div id="content-container">
+  <!-- 左边：模型图片 -->
+  <div id="model-photo-container">
+
+  </div>
+
+  <!-- 中间：试穿和衣服选择 -->
+  <div id="try-on-container">
+    <div id="clothes-selection">
+
+    </div>
+  </div>
+
+  <!-- 右边：换衣结果 -->
+  <div id="result-container">
+    <div id="result-display">
+
+    </div>
+  </div>
 </div>
-<div id="try-on-container">
+
+<div id="bottom-controls">
   <button id="try-on-button" disabled>Try On</button>
 </div>
+
+<!-- 右下角的 Next Pose 按钮 -->
+<button id="next-pose-button" disabled>Next Pose</button>
+
+<div id="loading-spinner" class="hidden"></div>

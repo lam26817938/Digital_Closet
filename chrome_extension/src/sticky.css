@@ -4,7 +4,7 @@ body {
   font-family: Arial, sans-serif;
 }
 
-/* Sticky 面板的主容器 */
+/* 🌟 Sticky 面板的主容器 */
 #sticky-panel {
   position: fixed;
   top: 50px;
@@ -13,15 +13,22 @@ body {
   height: 60px;
   display: flex;
   align-items: center;
-  background-color: #42d7a6;
+  background: linear-gradient(135deg, rgb(50, 207, 221), rgb(38, 170, 181)); /* ✅ 统一颜色 */
   border-radius: 8px 0 0 8px;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
   z-index: 9999;
   overflow: hidden;
-  cursor: default;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
 
-/* 左侧内容区域 */
+/* 🌟 悬停时，让 Sticky 面板稍微放大 */
+#sticky-panel:hover {
+  transform: scale(1.05);
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.3);
+}
+
+/* 🌟 左侧内容区域 */
 #sticky-content {
   flex: 1;
   padding: 10px;
@@ -31,6 +38,7 @@ body {
   justify-content: center;
 }
 
+/* 🌟 关闭按钮 */
 #sticky-content button {
   position: absolute;
   top: 5px;
@@ -40,36 +48,51 @@ body {
   color: white;
   font-size: 18px;
   cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
 
+#sticky-content button:hover {
+  transform: scale(1.2);
+  color: #fff8;
+}
+
+/* 🌟 LOGO 图片优化 */
 #logo img {
   width: 40px;
   height: 40px; /* 固定宽高 */
   object-fit: cover; /* 确保图片填充 */
-  border-radius: 50%; /* 如果需要圆形图标 */
+  border-radius: 50%; /* ✅ 圆形图标 */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* ✅ 添加柔和阴影 */
+  transition: transform 0.3s ease-in-out;
 }
 
-/* 右侧拖拉区域 */
+#logo img:hover {
+  transform: scale(1.1);
+}
+
+/* 🌟 右侧拖拉区域 */
 #drag-handle {
   width: 20px;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.2); /* ✅ 玻璃拟态半透明 */
   display: none; /* 默认隐藏 */
   cursor: grab;
+  transition: background 0.3s ease-in-out;
 }
 
-/* 鼠标悬停时显示拖拉区域 */
+/* 🌟 鼠标悬停时，显示拖拉区域 */
 #sticky-panel:hover #drag-handle {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 #drag-handle:hover {
-  background-color: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.5);
 }
 
+/* 🌟 让拖拉手柄更现代 */
 #drag-handle::after {
   content: "";
   width: 4px;
@@ -77,5 +100,11 @@ body {
   background-color: white;
   border-radius: 2px;
   display: block;
-  box-shadow: 0 4px white, 0 -4px white; /* 模拟三个圆点 */
+  box-shadow: 0 4px white, 0 -4px white; /* ✅ 模拟三个圆点 */
+  opacity: 0.8;
+  transition: opacity 0.3s ease-in-out;
+}
+
+#drag-handle:hover::after {
+  opacity: 1;
 }

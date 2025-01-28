@@ -1,138 +1,133 @@
-/* 背景样式 */
+/* 🌟 让整个 body 更现代 */
 body {
     font-family: Arial, sans-serif;
-    width: 400px; /* 固定宽度 */
-    height: 600px; /* 固定高度 */
-    overflow-y: auto; /* 当内容超出时允许滚动 */
+    width: 400px;
+    height: 600px;
+    overflow-y: auto;
     padding: 10px;
-    background: linear-gradient(135deg, #f0f8ff, #ffffff); /* 浅蓝到白的渐变背景 */
+    background: rgba(255, 255, 255, 0.3); /* ✅ 玻璃拟态背景 */
+    backdrop-filter: blur(12px); /* ✅ 背景模糊增强 */
     margin: 0;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* 添加阴影 */
-    border-radius: 10px; /* 页面整体圆角 */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15); /* ✅ 立体阴影增强 */
+    border-radius: 15px;
+    transition: transform 0.3s ease-in-out;
 }
 
-/* 图片容器 */
+body:hover {
+    transform: scale(1.02);
+}
+
+/* 🌟 图片容器 */
 .image-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px; /* 增加图片之间的间距 */
+    gap: 12px;
+    justify-content: center; /* ✅ 让图片居中 */
 }
 
-/* 图片容器的子元素样式 */
-.image-container div {
-    position: relative; /* 让操作按钮相对定位 */
-}
-
-/* 图片样式 */
+/* 🌟 让图片更现代 */
 .image-container img {
-    max-width: 120px; /* 限制图片宽度 */
-    max-height: 150px; /* 限制图片高度 */
-    object-fit: cover; /* 图片裁剪填充容器 */
-    cursor: pointer; /* 鼠标变为指针 */
-    border: 2px solid transparent; /* 默认边框透明 */
-    border-radius: 8px; /* 图片边角圆滑 */
-    transition: transform 0.2s, border-color 0.2s; /* 鼠标悬停时添加动画 */
+    max-width: 190px;
+    max-height: 280px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 3px solid transparent; /* ✅ 默认无边框 */
+    border-radius: 12px;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15); /* ✅ 柔和阴影 */
 }
 
-/* 鼠标悬停图片效果 */
+/* 🌟 悬停时放大 + 阴影变强 */
 .image-container img:hover {
-    transform: scale(1.05); /* 悬停时放大图片 */
-    border-color: rgb(200, 230, 255); /* 悬停时浅蓝边框 */
+    transform: scale(1.08);
+    border-color: rgba(50, 207, 221, 0.7);
+    box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.2);
 }
 
-/* 图片选中样式 */
+/* 🌟 选中的图片特效 */
 .image-container img.selected {
-    border-color: rgb(50, 207, 221); /* 浅蓝边框 */
-    transform: scale(1.1); /* 选中时略微放大 */
+    border-color: rgb(50, 207, 221); /* ✅ 高亮边框 */
+    transform: scale(1.1);
+    box-shadow: 0px 8px 22px rgba(50, 207, 221, 0.5);
 }
 
-/* 图片操作按钮 */
-.image-container .image-actions {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    display: none; /* 默认隐藏按钮 */
-    flex-direction: column;
-    gap: 5px;
-    z-index: 10; /* 确保按钮在最上层 */
-}
-
-/* 鼠标悬停图片容器时显示按钮 */
-.image-container div:hover .image-actions {
-    display: flex; /* 鼠标悬停整个容器时显示按钮 */
-}
-
-/* 按钮样式 */
+/* 🌟 图片操作按钮 */
 .image-actions button {
-    padding: 5px 8px;
+    padding: 6px 10px;
     font-size: 12px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
-    background-color: rgba(50, 207, 221, 0.9);
+    background: linear-gradient(135deg, rgb(50, 207, 221), rgb(38, 170, 181)); /* ✅ 颜色统一 */
     color: white;
-    transition: background-color 0.2s, transform 0.2s;
+    transition: all 0.3s ease;
 }
 
 .image-actions button:hover {
-    background-color: rgba(38, 170, 181, 0.9); /* 鼠标悬停时加深颜色 */
-    transform: scale(1.1); /* 鼠标悬停时放大按钮 */
+    background: linear-gradient(135deg, rgb(38, 170, 181), rgb(32, 140, 150)); /* ✅ 悬停颜色加深 */
+    transform: scale(1.1);
 }
 
-/* 状态栏样式 */
-.status {
-    margin-bottom: 10px;
-    font-size: 16px;
-    font-weight: bold;
-    color: rgb(60, 60, 60); /* 深灰色字体 */
-}
-
-/* 固定底部的按钮区域 */
+/* 🌟 固定底部按钮区域 */
 .fixed-buttons {
     position: sticky;
     bottom: 0;
-    background: white;
-    padding: 10px;
+    background: rgba(255, 255, 255, 0.3); /* ✅ 让底部按钮半透明 */
+    backdrop-filter: blur(10px); /* ✅ 玻璃拟态效果更强 */
+    padding: 12px;
     display: flex;
     justify-content: space-between;
-    border-top: 1px solid #ccc;
-    box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.1); /* 添加顶部阴影 */
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
 }
 
-/* 底部按钮样式 */
+/* 🌟 让底部按钮更有科技感 */
 .fixed-buttons button {
-    padding: 8px 15px;
+    padding: 10px 18px;
     font-size: 14px;
+    font-weight: bold;
     cursor: pointer;
-    background-color: rgb(50, 207, 221);
+    background: linear-gradient(135deg, rgb(50, 207, 221), rgb(38, 170, 181));
     color: white;
     border: none;
-    border-radius: 5px;
-    transition: background-color 0.2s, transform 0.2s;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .fixed-buttons button:hover {
-    background-color: rgb(38, 170, 181);
-    transform: scale(1.05); /* 鼠标悬停时放大 */
+    background: linear-gradient(135deg, rgb(38, 170, 181), rgb(32, 140, 150));
+    transform: scale(1.05);
 }
 
-/* 右上角的配置按钮 */
+/* 🌟 禁用状态的按钮 */
+.fixed-buttons button:disabled {
+    background: linear-gradient(135deg, rgba(50, 207, 221, 0.5), rgba(38, 170, 181, 0.5));
+    color: rgba(255, 255, 255, 0.7);
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+/* 🌟 右上角的配置按钮 */
 .profile-button {
     position: absolute;
     top: 10px;
     right: 10px;
     cursor: pointer;
-    background-color: rgb(50, 207, 221);
+    background: linear-gradient(135deg, rgb(50, 207, 221), rgb(38, 170, 181));
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     padding: 8px 12px;
     font-size: 14px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* 添加按钮阴影 */
-    transition: background-color 0.2s, transform 0.2s;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
 }
 
 .profile-button:hover {
-    background-color: rgb(38, 170, 181);
+    background: linear-gradient(135deg, rgb(38, 170, 181), rgb(32, 140, 150));
     transform: scale(1.05);
 }
