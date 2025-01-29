@@ -207,3 +207,37 @@
   background: linear-gradient(135deg, #a0a0a0, #808080); /* 灰色渐变 */
   cursor: not-allowed; /* 鼠标变成禁止符号 */
 }
+
+/* 🌟 关闭按钮设计 */
+#close-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.3); /* 玻璃拟态 */
+  backdrop-filter: blur(8px); /* 背景模糊 */
+  border: 1px solid rgba(255, 255, 255, 0.5); /* 轻微的边框 */
+  border-radius: 50%; /* 圆形按钮 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333; /* 默认颜色 */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 🌟 悬停时增强效果 */
+#close-button:hover {
+  background: rgba(255, 255, 255, 0.6);
+  color: #d00; /* 让 X 变红，提醒用户这是关闭按钮 */
+  transform: scale(1.1); /* 轻微放大 */
+}
+
+/* 🌟 按下时的反馈效果 */
+#close-button:active {
+  transform: scale(0.95);
+}

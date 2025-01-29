@@ -210,7 +210,7 @@ function togglefloat() {
       updateFloatingContent();
       updateModelPhoto()
 
-      const closeButton = popupContainer.querySelector("#close-floating-window");
+      const closeButton = popupContainer.querySelector("#close-button");
       if (closeButton) {
         closeButton.addEventListener("click", () => {
           popupContainer.remove(); // 移除浮动窗口

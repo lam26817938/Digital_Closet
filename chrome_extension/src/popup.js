@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // 创建图片容器
       const imgWrapper = document.createElement('div');
       imgWrapper.style.position = 'relative'; // 确保按钮绝对定位有效
+      imgWrapper.classList.add("image-wrapper");
   
       // 创建图片元素
       const img = document.createElement('img');

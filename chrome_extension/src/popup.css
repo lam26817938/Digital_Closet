@@ -3,77 +3,99 @@ body {
     font-family: Arial, sans-serif;
     width: 400px;
     height: 600px;
-    overflow-y: auto;
+    overflow-y: visible;
     padding: 10px;
     background: rgba(255, 255, 255, 0.3); /* ✅ 玻璃拟态背景 */
     backdrop-filter: blur(12px); /* ✅ 背景模糊增强 */
     margin: 0;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15); /* ✅ 立体阴影增强 */
     border-radius: 15px;
-    transition: transform 0.3s ease-in-out;
 }
 
-body:hover {
-    transform: scale(1.02);
-}
 
 /* 🌟 图片容器 */
 .image-container {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    justify-content: center; /* ✅ 让图片居中 */
+    justify-content: center;
 }
 
-/* 🌟 让图片更现代 */
-.image-container img {
+/* 🌟 让 `imgWrapper` 作为相对定位容器 */
+.image-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* 🌟 让图片正常显示 */
+.image-wrapper img {
     max-width: 190px;
     max-height: 280px;
     object-fit: cover;
     cursor: pointer;
-    border: 3px solid transparent; /* ✅ 默认无边框 */
+    border: 3px solid transparent;
     border-radius: 12px;
     transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15); /* ✅ 柔和阴影 */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* 🌟 悬停时放大 + 阴影变强 */
-.image-container img:hover {
+/* 🌟 鼠标悬停时，图片稍微放大 */
+.image-wrapper:hover img:not(.selected) {
     transform: scale(1.08);
     border-color: rgba(50, 207, 221, 0.7);
     box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.2);
 }
 
-/* 🌟 选中的图片特效 */
-.image-container img.selected {
-    border-color: rgb(50, 207, 221); /* ✅ 高亮边框 */
-    transform: scale(1.1);
-    box-shadow: 0px 8px 22px rgba(50, 207, 221, 0.5);
+/* 🌟 按钮容器（默认隐藏） */
+.image-actions {
+    position: absolute;
+    bottom: 8px; /* ✅ 让按钮靠近图片底部 */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s;
 }
 
-/* 🌟 图片操作按钮 */
+/* 🌟 悬停在 `image-wrapper` 时，显示按钮 */
+.image-wrapper:hover .image-actions {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 🌟 让按钮有现代感 */
 .image-actions button {
     padding: 6px 10px;
     font-size: 12px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    background: linear-gradient(135deg, rgb(50, 207, 221), rgb(38, 170, 181)); /* ✅ 颜色统一 */
+    background: linear-gradient(135deg, rgb(50, 207, 221), rgb(38, 170, 181));
     color: white;
     transition: all 0.3s ease;
 }
 
 .image-actions button:hover {
-    background: linear-gradient(135deg, rgb(38, 170, 181), rgb(32, 140, 150)); /* ✅ 悬停颜色加深 */
+    background: linear-gradient(135deg, rgb(38, 170, 181), rgb(32, 140, 150));
     transform: scale(1.1);
+}
+
+.image-wrapper img.selected {
+    border: 3px solid rgb(50, 207, 221); /* ✅ 高亮边框 */
+    transform: scale(1.1);
+    box-shadow: 0px 8px 22px rgba(50, 207, 221, 0.5);
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 
 /* 🌟 固定底部按钮区域 */
 .fixed-buttons {
     position: sticky;
     bottom: 0;
+    width: 100%;
     background: rgba(255, 255, 255, 0.3); /* ✅ 让底部按钮半透明 */
-    backdrop-filter: blur(10px); /* ✅ 玻璃拟态效果更强 */
+    backdrop-filter: blur(10px); /* ✅ 玻璃拟态效果 */
     padding: 12px;
     display: flex;
     justify-content: space-between;
@@ -81,6 +103,7 @@ body:hover {
     box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; /* ✅ 添加动画 */
 }
 
 /* 🌟 让底部按钮更有科技感 */

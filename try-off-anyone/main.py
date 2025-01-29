@@ -20,7 +20,7 @@ client = Client("franciszzj/Leffa")
 
 app = FastAPI()
 
-MODEL = 'pose1.jpg'
+MODEL = 'pose6.jpg'
 directory = Path("data")
 
 app.mount("/static", StaticFiles(directory="data"), name="static")
