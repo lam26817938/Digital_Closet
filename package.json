@@ -1,0 +1,16 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "main": "try-off-anyone/node/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node try-off-anyone/node/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "puppeteer": "^24.2.0"
+  }
+}
