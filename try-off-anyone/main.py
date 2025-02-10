@@ -1,7 +1,7 @@
 from src.test_vton import test_vton
 from src.inference import test_image
 import argparse
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Query
 from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.requests import Request
@@ -14,6 +14,7 @@ import sys
 from gradio_client import Client, handle_file
 import shutil
 import random
+import subprocess
 
 
 client = Client("franciszzj/Leffa")
@@ -191,6 +192,29 @@ async def pose(request: TryOnRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error during try-on process: {str(e)}")
+    
+    
+@app.get("/get_match", response_class=JSONResponse)
+async def get_match(url: str = Query(..., description="圖片網址")):
+    try:
+        node_dir = "node"
+        # 執行 Node.js 腳本
+        result = subprocess.run(
+            ["node", "index.js", url],
+            capture_output=True,
+            text=True,
+            check=True,
+            cwd=node_dir  # 指定 Node.js 腳本執行的目錄
+        )
+
+        # 解析 Node.js 返回的 JSON 結果
+        output = result.stdout.strip()
+        print(output)
+        return JSONResponse(content={"results": output})
+
+    except subprocess.CalledProcessError as e:
+        raise HTTPException(status_code=500, detail=f"Node.js 錯誤: {e.stderr}")
+    
 
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=8000)
