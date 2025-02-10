@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
 from src.test_vton import test_vton
 from src.inference import test_image
 import argparse
@@ -10,7 +14,6 @@ from pydantic import BaseModel
 import uvicorn
 from pathlib import Path
 import base64
-import sys
 from gradio_client import Client, handle_file
 import shutil
 import random
