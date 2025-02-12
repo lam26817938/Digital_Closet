@@ -17,6 +17,7 @@ test_log/
 analysis/
 classification_models/
 nlp_models/
+node_output.json
 # C extensions
 *.so
 .idea

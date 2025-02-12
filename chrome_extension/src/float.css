@@ -48,6 +48,15 @@
 /* 🌟 左右两侧（模型 & 试穿结果） */
 #model-photo-container,
 #result-container {
+  align-items: center;
+  justify-content: center;
+  width: 30%; /* 調整寬度，使其均勻分佈 */
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+#model-photo-container{
   display: flex;
   align-items: center;
   justify-content: center;
