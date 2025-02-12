@@ -13,11 +13,16 @@ async function searchGoogleLens(imageUrl) {
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
         const page = await browser.newPage();
-        
+
+        await page.setExtraHTTPHeaders({
+            "ngrok-skip-browser-warning": "true"
+        });
+
+        // await new Promise(resolve => setTimeout(resolve, 500000));
         // 進入 Google Lens 搜尋頁面
 
-         const lensUrl = `https://lens.google.com/uploadbyurl?url=${encodeURIComponent(imageUrl)}`;
-         await page.goto(lensUrl, { waitUntil: 'networkidle2' });
+        const lensUrl = `https://lens.google.com/uploadbyurl?url=${encodeURIComponent(imageUrl)}`;
+        await page.goto(lensUrl, { waitUntil: 'networkidle2' });
 
 
         // 等待搜尋結果載入

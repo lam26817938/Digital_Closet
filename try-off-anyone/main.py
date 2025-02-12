@@ -1,7 +1,7 @@
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
+#sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
 from src.test_vton import test_vton
 from src.inference import test_image
 import argparse
@@ -18,7 +18,11 @@ from gradio_client import Client, handle_file
 import shutil
 import random
 import subprocess
+import json
+import requests
 
+
+Public_URL = 'https://b7b5-2600-1700-eb40-4e90-8501-afee-4549-1e81.ngrok-free.app'
 
 client = Client("franciszzj/Leffa")
 
@@ -41,6 +45,10 @@ class InferenceRequest(BaseModel):
 
 class TryOnRequest(BaseModel):
     ref_image_path: str 
+
+class SaveImageRequest(BaseModel):
+    result: dict
+    selected_image_name: str
 
 
 def terminal_args():
@@ -89,7 +97,13 @@ def run_ai_inference(url: str):
         test_image(url)
     except Exception as e:
         print(f"❌ AI 任务失败: {e}")
+        
+        
+@app.get("/")
+async def hello():
+    return {"message": "Hello, World!"}
                 
+
 @app.post("/inference")
 async def run_inference(background_tasks: BackgroundTasks, request: InferenceRequest):
     """
@@ -98,25 +112,35 @@ async def run_inference(background_tasks: BackgroundTasks, request: InferenceReq
     output_dir = Path("data")
     output_dir.mkdir(exist_ok=True)  # 確保資料夾存在
 
-    for url in request.images:   
+    for url in request.images:
         background_tasks.add_task(run_ai_inference, url)
-    
+
 
 
 
 @app.get("/inference", response_class=JSONResponse)
 async def list_files():
-
     if not directory.exists():
         raise HTTPException(status_code=404, detail="Data directory not found")
     
-    files = [file.name for file in directory.iterdir() if file.is_file() and file.name.startswith("clo") and file.suffix == ".png"]
+    files = [file.name for file in directory.iterdir() if file.is_file() and (file.name.startswith("clo") and (file.suffix == ".png" or file.suffix == ".json"))]
 
     if not files:
         raise HTTPException(status_code=404, detail="No files found in the data directory")
     
-    images = [f"http://127.0.0.1:8000/static/{file}" for file in files]
-    return {"images": images}
+    file_map = {}
+    for file in files:
+        base_name = Path(file).stem
+        if base_name not in file_map:
+            file_map[base_name] = {"png": None, "json": None}
+
+        if file.endswith(".png"):
+            file_map[base_name]["png"] = f"http://127.0.0.1:8000/static/{file}"
+        elif file.endswith(".json"):
+            with open(directory / file, 'r') as json_file:
+                file_map[base_name]["json"] = json.load(json_file)
+        
+    return {"files": file_map}
 
 @app.get("/model", response_class=JSONResponse)
 async def model():
@@ -133,7 +157,7 @@ async def tryon(request: TryOnRequest):
     if not src_image_path.exists():
         raise HTTPException(status_code=404, detail="Source image (model.png) not found")
 
-    # 使用 Gradio 客戶端進行推理
+        # 使用 Gradio 客戶端進行推理
     try:
         result = client.predict(
             src_image_path=handle_file(str(src_image_path)),  # 本地的 model.png
@@ -196,24 +220,43 @@ async def pose(request: TryOnRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error during try-on process: {str(e)}")
     
+@app.post("/save_json")
+async def save_json(request: SaveImageRequest):
+    """
+    接收結果 JSON 和選擇的圖片名稱，保存結果為 JSON 文件
+    """
+    output_dir = Path("data")
+    output_dir.mkdir(exist_ok=True)  # 確保資料夾存在
+
+    # 保存結果為 JSON 文件
+    json_path = output_dir / (Path(request.selected_image_name).stem + ".json")
+    with open(json_path, 'w') as json_file:
+        json.dump(request.result, json_file)
+
+    return {"saved_image": f"http://127.0.0.1:8000/static/{json_path.name}"}
     
 @app.get("/get_match", response_class=JSONResponse)
-async def get_match(url: str = Query(..., description="圖片網址")):
+def get_match(url: str = Query(..., description="圖片網址")):
     try:
         node_dir = "node"
         # 執行 Node.js 腳本
-        result = subprocess.run(
-            ["node", "index.js", url],
-            capture_output=True,
-            text=True,
-            check=True,
-            cwd=node_dir  # 指定 Node.js 腳本執行的目錄
-        )
-
-        # 解析 Node.js 返回的 JSON 結果
-        output = result.stdout.strip()
-        print(output)
-        return JSONResponse(content={"results": output})
+        fixurl = Public_URL+'/static/'+url.split("/")[-1]
+        output_file = "node_output.json"
+        with open(output_file, "w") as outfile:
+            subprocess.run(
+                ["node", "index.js", fixurl],
+                stdout=outfile,
+                stderr=subprocess.PIPE,
+                text=True,
+                check=True,
+                cwd=node_dir,
+            )
+        
+        # 讀取輸出結果
+        with open(output_file, "r") as infile:
+            json_output = json.load(infile)
+        
+        return JSONResponse(content={"results": json_output})
 
     except subprocess.CalledProcessError as e:
         raise HTTPException(status_code=500, detail=f"Node.js 錯誤: {e.stderr}")
