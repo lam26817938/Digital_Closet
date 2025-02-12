@@ -125,59 +125,68 @@ function updateResultDisplay(results, isMultiple = false) {
   if (isMultiple) {
     // 插入多個結果
     results.forEach(result => {
-        const resultContainer = document.createElement('div');
-        resultContainer.style.display = 'flex';
-        resultContainer.style.alignItems = 'center';
-        resultContainer.style.marginBottom = '10px';
-        resultContainer.style.justifyContent = 'space-between';  // 確保按鈕靠右
+      const resultContainer = document.createElement('div');
+      resultContainer.style.display = 'flex';
+      resultContainer.style.alignItems = 'center';
+      resultContainer.style.marginBottom = '10px';
       
-        const imgElement = document.createElement('a');
-        imgElement.href = result.link;
-        imgElement.target = '_blank';
-        const img = document.createElement('img');
-        img.src = result.thumbnail;
-        img.alt = 'Result Image';
-        img.style.maxWidth = '100px';
-        img.style.marginRight = '10px';
-        imgElement.appendChild(img);
+      const imgElement = document.createElement('a');
+      imgElement.href = result.link;
+      imgElement.target = '_blank';
+      const img = document.createElement('img');
+      img.src = result.thumbnail;
+      img.alt = 'Result Image';
+      img.style.maxWidth = '100px';
+      img.style.marginRight = '10px'; // 與品牌名之間的間距
+      imgElement.appendChild(img);
       
-        const brandElement = document.createElement('a');
-        brandElement.href = result.link;
-        brandElement.textContent = result.retail;
-        brandElement.style.marginRight = '10px';
-        brandElement.target = '_blank';
+      const detailsContainer = document.createElement('div');
+      detailsContainer.style.display = 'flex';
+      detailsContainer.style.flexDirection = 'column';
+      detailsContainer.style.alignItems = 'flex-start';
       
-        const pickButton = document.createElement('button');
-        pickButton.textContent = 'Pick';
-        pickButton.style.marginLeft = 'auto';  // 讓按鈕靠右
-        pickButton.addEventListener('click', () => {
-          const selectedImage = document.querySelector('#clothes-selection img.selected');
-          if (!selectedImage) {
-            alert('請先選擇一張圖片！');
-            return;
-          }
+      const brandElement = document.createElement('a');
+      brandElement.href = result.link;
+      brandElement.textContent = result.retail;
+      brandElement.style.marginBottom = '10px'; // 與按鈕之間的間距
+      brandElement.target = '_blank';
       
-          const selectedImageName = new URL(selectedImage.src).pathname.split('/').pop();
+      const pickButton = document.createElement('button');
+      pickButton.textContent = 'Pick';
+      pickButton.style.marginTop = '10px'; // 與品牌名之間的間距
+      pickButton.addEventListener('click', () => {
+        const selectedImage = document.querySelector('#clothes-selection img.selected');
+        if (!selectedImage) {
+          alert('請先選擇一張圖片！');
+          return;
+        }
       
-          fetch('http://127.0.0.1:8000/save_json', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ result: result, selected_image_name: selectedImageName }),
-          })
-          .then(response => response.json())
-          .catch(error => {
-            console.error('Error saving image:', error);
-          });
+        const selectedImageName = new URL(selectedImage.src).pathname.split('/').pop();
+      
+        fetch('http://127.0.0.1:8000/save_json', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ result: result, selected_image_name: selectedImageName }),
+        })
+        .then(response => response.json())
+        .then(() => {
+          updateFloatingContent(); // 成功後執行 updateFloatingContent
+        })
+        .catch(error => {
+          console.error('Error saving image:', error);
         });
-      
-        resultContainer.appendChild(imgElement);
-        resultContainer.appendChild(brandElement);
-        resultContainer.appendChild(pickButton);
-      
-        resultDisplay.appendChild(resultContainer);
       });
+      
+      detailsContainer.appendChild(brandElement);
+      detailsContainer.appendChild(pickButton); // 將按鈕放在品牌名下面
+      
+      resultContainer.appendChild(imgElement);
+      resultContainer.appendChild(detailsContainer);
+      
+      resultDisplay.appendChild(resultContainer);
+    });
   } else {
     // 只顯示一張圖片結果
     const imgElement = document.createElement('img');
